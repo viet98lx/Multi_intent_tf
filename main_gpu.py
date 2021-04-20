@@ -68,9 +68,9 @@ data_dir = config.data_dir
 output_dir = config.output_dir
 tensorboard_dir=config.tensorboard_dir
 
-training_file = data_dir + "/train_lines.txt"
-validate_file = data_dir + "/validate_lines.txt"
-testing_file = data_dir + "/test_lines.txt"
+training_file = data_dir + "/train.txt"
+validate_file = data_dir + "/validate.txt"
+testing_file = data_dir + "/test.txt"
 
 print("***************************************************************************************")
 print("Output Dir: " + output_dir)
