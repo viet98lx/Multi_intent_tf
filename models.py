@@ -43,6 +43,7 @@ class Beacon(Model):
         self.alpha = alpha
         self.batch_size = batch_size
         self.top_k = top_k
+        self.pooling = 'avg'
 
         with tf.variable_scope(self.scope):
             # Initialized for n_hop adjacency matrix
@@ -63,10 +64,12 @@ class Beacon(Model):
                 self.bseq_encoder = tf.sparse_reshape(self.bseq, shape=[-1, self.nb_items], name="bseq_2d")
                 self.bseq_encoder = self.encode_basket_graph(self.bseq_encoder, self.C_Basket, True)
                 self.bseq_encoder = tf.reshape(self.bseq_encoder, shape=[-1, self.max_seq_length, self.nb_items], name="bsxMxN")
-                self.bseq_encoder = create_basket_encoder(self.bseq_encoder, emb_dim, param_initializer=tf.initializers.he_uniform(), activation_func=tf.nn.relu)       
+                self.bseq_encoder_1 = create_basket_encoder(self.bseq_encoder, emb_dim, param_initializer=tf.initializers.he_uniform(), activation_func=tf.nn.relu, name="Basket_Encoder_1")
+                self.bseq_encoder_2 = create_basket_encoder(self.bseq_encoder, emb_dim, param_initializer=tf.initializers.he_uniform(), activation_func=tf.nn.relu, name="Basket_Encoder_2")
 
+                self.bseq_combine = self.combine(x1=self.bseq_encoder_1, x2=self.bseq_encoder_2, method=self.pooling)
                 # batch_size x max_seq_length x H
-                rnn_encoder = create_rnn_encoder(self.bseq_encoder, self.rnn_units, rnn_dropout_rate, self.bseq_length, rnn_cell_type, 
+                rnn_encoder = create_rnn_encoder(self.bseq_combine, self.rnn_units, rnn_dropout_rate, self.bseq_length, rnn_cell_type,
                                                     param_initializer=tf.initializers.glorot_uniform(), seed=self.seed)
                 
                 # Hack to build the indexing and retrieve the right output. # batch_size x H
@@ -156,6 +159,14 @@ class Beacon(Model):
                 encoder = tf.matmul(binput, self.I_B_Diag, name="XxI_B")
                 encoder += self.relu_with_threshold(tf.matmul(binput, self.A, name="XxA"), beta) 
         return encoder
+
+    def combine(self, x1, x2, method):
+        if method == 'avg':
+            return tf.add(x1, x2)/2
+        elif method == 'max':
+            return tf.math.maximum(x1, x2)
+        else:
+            return tf.add(x1, x2)
 
     def get_item_bias(self):
         return self.session.run(self.I_B)

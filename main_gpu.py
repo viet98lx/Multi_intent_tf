@@ -22,6 +22,7 @@ tf.flags.DEFINE_integer("emb_dim", 2, "The dimensionality of embedding (default:
 tf.flags.DEFINE_integer("rnn_unit", 4, "The number of hidden units of RNN (default: 4)")
 tf.flags.DEFINE_integer("nb_hop", 1, "The number of neighbor hops  (default: 1)")
 tf.flags.DEFINE_float("alpha", 0.5, "The reguralized hyper-parameter (default: 0.5)")
+tf.flags.DEFINE_string("pooling", 'avg', "Pooling method")
 
 tf.flags.DEFINE_integer("matrix_type", 1, "The type of adjacency matrix (0=zero,1=real,default:1)")
 
@@ -137,7 +138,7 @@ if config.train_mode:
         print(" + Initialize the network")
         net = models.Beacon(sess, config.emb_dim, config.rnn_unit, config.alpha, MAX_SEQ_LENGTH, item_probs, adj_matrix, config.top_k, 
                              config.batch_size, config.rnn_cell_type, config.dropout_rate, config.seed, config.learning_rate)
-
+        net.pooling = config.pooling
         print(" + Initialize parameters")
         sess.run(tf.global_variables_initializer())
 
@@ -157,7 +158,7 @@ if config.prediction_mode or config.tune_mode:
 
         net = models.Beacon(sess, config.emb_dim, config.rnn_unit, config.alpha, MAX_SEQ_LENGTH, item_probs, adj_matrix, config.top_k, 
                         config.batch_size, config.rnn_cell_type, config.dropout_rate, config.seed, config.learning_rate)
-
+        net.pooling = config.pooling
         print(" + Initialize parameters")
         sess.run(tf.global_variables_initializer())
 
