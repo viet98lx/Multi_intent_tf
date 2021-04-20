@@ -9,10 +9,10 @@ import time
 def train_network(sess, net, train_generator, validate_generator, nb_epoch, 
                   total_train_batches, total_validate_batches, display_step,
                   early_stopping_k, epsilon, tensorboard_dir, output_dir,
-                  test_generator, total_test_batches):
+                  test_generator, total_test_batches, model_name):
     summary_writer = None
     if tensorboard_dir is not None:
-        summary_writer = tf.summary.FileWriter(tensorboard_dir)
+        summary_writer = tf.summary.FileWriter(tensorboard_dir, filename_suffix=model_name)
     # Add ops to save and restore all the variables.
     saver = tf.train.Saver()
 

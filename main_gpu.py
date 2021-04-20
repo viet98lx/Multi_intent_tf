@@ -12,6 +12,7 @@ import procedure
 
 tf.flags.DEFINE_string("device_id", None, "GPU device is to be used in training (default: None)")
 tf.flags.DEFINE_integer("seed", 2, "Seed value for reproducibility (default: 89)")
+tf.flags.DEFINE_string("model_name", "multi_intent", "The name of model")
 
 # Model hyper-parameters
 tf.flags.DEFINE_string("data_dir", None, "The input data directory (default: None)")
@@ -147,7 +148,7 @@ if config.train_mode:
         procedure.train_network(sess, net, train_generator, validate_generator, config.nb_epoch,
                                 total_train_batches, total_validate_batches, config.display_step,
                                 config.early_stopping_k, config.epsilon, tensorboard_dir, model_dir,
-                                test_generator, total_test_batches)
+                                test_generator, total_test_batches, config.model_name)
 
         # Reset before re-load
     tf.reset_default_graph()
