@@ -30,7 +30,7 @@ class Beacon(Model):
 
     def __init__(self, sess, emb_dim, rnn_units, alpha, 
                  max_seq_length, item_probs, adj_matrix, top_k,
-                 batch_size, rnn_cell_type, rnn_dropout_rate, seed, learning_rate):
+                 batch_size, rnn_cell_type, rnn_dropout_rate, seed, learning_rate, pooling):
 
         super().__init__(sess, seed, learning_rate, name="GRN")
 
@@ -43,7 +43,7 @@ class Beacon(Model):
         self.alpha = alpha
         self.batch_size = batch_size
         self.top_k = top_k
-        self.pooling = 'avg'
+        self.pooling = pooling
 
         with tf.variable_scope(self.scope):
             # Initialized for n_hop adjacency matrix
