@@ -161,6 +161,7 @@ class Beacon(Model):
         return encoder
 
     def combine(self, x1, x2, method):
+        print("Pooling method: ", method)
         if method == 'avg':
             return tf.add(x1, x2)/2
         elif method == 'max':
