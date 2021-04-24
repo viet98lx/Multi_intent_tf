@@ -80,7 +80,7 @@ print("@Create directories")
 utils.create_folder(output_dir + "/models")
 utils.create_folder(output_dir + "/topN")
 
-if tensorboard_dir is not None:
+if not os.path.exists(tensorboard_dir):
     utils.create_folder(tensorboard_dir)
 
 # Load train, validate & test
